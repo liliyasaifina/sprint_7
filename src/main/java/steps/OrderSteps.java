@@ -1,10 +1,8 @@
 package steps;
 
-import com.google.gson.Gson;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import model.OrderModel;
-
 import static data.OrderData.CANCEL_ORDER_PATH;
 import static data.OrderData.CREATE_ORDER_PATH;
 import static io.restassured.RestAssured.given;
@@ -13,15 +11,13 @@ import static io.restassured.RestAssured.given;
 public class OrderSteps {
     @Step("Creation scooter order with valid data set")
     public static Response createOrder(OrderModel order){
-        Gson gson = new Gson();
-        String json = gson.toJson(order);
         return  given()
                 .contentType("application/json")
-                .body(json)
+                .body(order)
                 .when()
                 .post(CREATE_ORDER_PATH).then().extract().response();
     }
-@Step("Cancelling existent order with valid data set")
+    @Step("Cancelling existent order with valid data set")
     public static  Response orderCancelling(String track){
         return  given()
                 .contentType("application/json")

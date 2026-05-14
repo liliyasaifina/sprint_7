@@ -1,26 +1,19 @@
-import com.google.gson.Gson;
+
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import model.OrderModel;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import steps.OrderSteps;
-
 import java.util.List;
-
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static steps.OrderSteps.createOrder;
 import static steps.OrderSteps.orderCancelling;
 
 @RunWith(Parameterized.class)
-
 public class CreateOrderTest extends BaseAPITest {
     public String track;
     private String firstName;
@@ -33,10 +26,11 @@ public class CreateOrderTest extends BaseAPITest {
     private String comment;
     private List<String> color;
 
-    @Parameterized.Parameters (name = "Тестовые данные: {0} {1} {2}")
+    @Parameterized.Parameters (name = "Тестовые данные: {0} {1} {2} {3}")
     public static Object[][] setForm(){
         return new Object[][]{
                 {"Naruto", "Uchiha", "Konoha, 142 apt.", "4", "+7 800 355 35 35", 5, "2020-06-06", "Saske, come back to Konoha", List.of("BLACK")},
+                {"Naruto", "Uchiha", "Konoha, 142 apt.", "4", "+7 800 355 35 35", 5, "2020-06-06", "Saske, come back to Konoha", List.of("GREY")},
                 {"Naruto", "Uchiha", "Konoha, 142 apt.", "4", "+7 800 355 35 35", 5, "2020-06-06", "Saske, come back to Konoha", List.of("BLACK", "GREY")},
                 {"Naruto", "Uchiha", "Konoha, 142 apt.", "4", "+7 800 355 35 35", 5, "2020-06-06", "Saske, come back to Konoha", null}
         };
@@ -57,7 +51,7 @@ public class CreateOrderTest extends BaseAPITest {
     @Test
     @DisplayName("Successful order creation")
     @Description("Parametrized test for choice different combination of scooter colour")
-        public void colorChoiceTest(){
+    public void colorChoiceTest(){
         OrderModel orderData = new OrderModel(
                 firstName,
                 lastName,
@@ -69,20 +63,16 @@ public class CreateOrderTest extends BaseAPITest {
                 comment,
                 color
         );
-
                 createOrder(orderData).then()
                 .statusCode(201)
                 .body("track", notNullValue());
-
         Response response = createOrder(orderData);
         track = response.jsonPath().getString("track");
-
     }
 
     @After
     public void cleanUp() {
-
-                orderCancelling(track).then()
+        orderCancelling(track).then()
                 .statusCode(200)
                 .body("ok", equalTo(true));
 }
