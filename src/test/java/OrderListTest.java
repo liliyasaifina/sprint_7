@@ -3,6 +3,8 @@
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.Test;
+
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static steps.OrderSteps.orderListGetting;
 
@@ -13,7 +15,7 @@ public class OrderListTest extends BaseAPITest {
     @Description("Basic test for /api/v1/orders endpoint")
     public void getOrdersListTest()  {
         orderListGetting().then()
-                .statusCode(200).body("orders", notNullValue());
+                .statusCode(SC_OK).body("orders", notNullValue());
     }
 }
 

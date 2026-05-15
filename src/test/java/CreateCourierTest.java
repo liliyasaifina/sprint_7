@@ -8,6 +8,7 @@ import model.CourierLoginModel;
 import org.junit.After;
 import org.junit.Test;
 import static data.CourierData.*;
+import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static steps.CourierSteps.*;
 
@@ -21,7 +22,7 @@ public class CreateCourierTest extends BaseAPITest{
         CourierCreateModel courier = new CourierCreateModel(LOGIN, PASSWORD, FIRSTNAME);
         createCourier(courier)
               .then()
-                .statusCode(201).body("ok", equalTo(true));
+                .statusCode(SC_CREATED).body("ok", equalTo(true));
     }
 
     @Test
@@ -30,9 +31,9 @@ public class CreateCourierTest extends BaseAPITest{
     public void errorExistingCourierCreationTest() {
         CourierCreateModel courier = new CourierCreateModel(LOGIN, PASSWORD, FIRSTNAME);
             createCourier(courier)
-                .then().statusCode(201).body("ok", equalTo(true));
+                .then().statusCode(SC_CREATED).body("ok", equalTo(true));
             createExistentCourier(courier).then()
-                .statusCode(409)
+                .statusCode(SC_CONFLICT)
                 .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
     }
 
@@ -42,7 +43,7 @@ public class CreateCourierTest extends BaseAPITest{
     public void invalidLoginTest() {
         CourierCreateModel courier = new CourierCreateModel(INVALID_LOGIN_COURIER_DATA, PASSWORD, FIRSTNAME);
             invalidLoginCourier(courier)
-                .then().statusCode(400)
+                .then().statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
@@ -52,7 +53,7 @@ public class CreateCourierTest extends BaseAPITest{
     public void invalidPasswordTest() {
         CourierCreateModel courier = new CourierCreateModel(LOGIN, INVALID_PASSWORD_COURIER_DATA, FIRSTNAME);
             invalidPasswordCourier(courier).then()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
@@ -64,7 +65,7 @@ public class CreateCourierTest extends BaseAPITest{
         Integer courierId = jsonId.get("id");
         if (courierId != null) {
             courierRemoval(courierId).then()
-                    .statusCode(200);
+                    .statusCode(SC_OK);
         } else {
             System.out.println("Id курьера не найден");
         }

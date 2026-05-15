@@ -8,6 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import java.util.List;
+
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static steps.OrderSteps.createOrder;
@@ -64,7 +67,7 @@ public class CreateOrderTest extends BaseAPITest {
                 color
         );
                 createOrder(orderData).then()
-                .statusCode(201)
+                .statusCode(SC_CREATED)
                 .body("track", notNullValue());
         Response response = createOrder(orderData);
         track = response.jsonPath().getString("track");
@@ -73,7 +76,7 @@ public class CreateOrderTest extends BaseAPITest {
     @After
     public void cleanUp() {
         orderCancelling(track).then()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("ok", equalTo(true));
 }
     }
